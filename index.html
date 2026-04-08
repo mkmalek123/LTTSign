@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LTT Signature Generator Pro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        h2 {
+            margin-top: 0;
+            color: #1557A9;
+            border-bottom: 2px solid #F4782B;
+            padding-bottom: 10px;
+            font-size: 18px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block;
+            color: #333;
+            font-size: 13px;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+        .col {
+            flex: 1;
+        }
+        .btn-primary {
+            background-color: #F4782B;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 25px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .btn-primary:hover {
+            background-color: #d66422;
+        }
+        #preview-container {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            background: #fff;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <h2>إدخال بيانات الموظف (LTT)</h2>
+        
+        <div class="row">
+            <div class="col">
+                <label>الاسم (Arabic Name)</label>
+                <input type="text" id="nameAr" value="مالك الصكاح" oninput="updateSignature()">
+            </div>
+            <div class="col">
+                <label>Name (English)</label>
+                <input type="text" id="nameEn" value="Malek Sakah" oninput="updateSignature()">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>المسمى الوظيفي (Arabic Title)</label>
+                <input type="text" id="titleAr" value="مهندس شبكات" oninput="updateSignature()">
+            </div>
+            <div class="col">
+                <label>Job Title (English)</label>
+                <input type="text" id="titleEn" value="Network Engineer" oninput="updateSignature()">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>الإدارة (Admin AR)</label>
+                <input type="text" id="adminAr" value="إدارة تقنية المعلومات" oninput="updateSignature()">
+            </div>
+            <div class="col">
+                <label>Admin (English)</label>
+                <input type="text" id="adminEn" value="Information Technology Department" oninput="updateSignature()">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>الوحدة (Unit AR)</label>
+                <input type="text" id="unitAr" value="وحدة الشبكات الداخلية" oninput="updateSignature()">
+            </div>
+            <div class="col">
+                <label>Unit (English)</label>
+                <input type="text" id="unitEn" value="Internal Networks Unit" oninput="updateSignature()">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>البريد الإلكتروني (Email)</label>
+                <input type="email" id="email" value="m.sakah@ltt.ly" oninput="updateSignature()">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>رقم الهاتف 1 (+218 91)</label>
+                <input type="text" id="phone1" value="244 5021" oninput="updateSignature()">
+            </div>
+            <div class="col">
+                <label>رقم الهاتف 2 (+218 95)</label>
+                <input type="text" id="phone2" value="444 3011" oninput="updateSignature()">
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="copySignatureVisual()">📋 نسخ التوقيع (Copy Signature)</button>
+    </div>
+
+    <div class="panel">
+        <h2>معاينة التوقيع (Live Preview)</h2>
+        <div id="preview-container"></div>
+    </div>
+
+    <script>
+        const logoUrl = "https://image2url.com/r2/default/images/1775123661211-e950c8b4-22b0-4741-a729-856d16c51b4d.png";
+
+        const LTT_LINKS = {
+            web: "https://www.ltt.ly/personal",
+            map: "https://maps.app.goo.gl/Ls141aS7G7okFVYy6",
+            yt: "https://www.youtube.com/@LibyaTT",
+            li: "https://www.linkedin.com/company/LibyaTT/",
+            x: "https://www.x.com/libyatt",
+            fb: "https://www.facebook.com/LibyaTT"
+        };
+
+        function updateSignature() {
+            const nameAr = document.getElementById('nameAr').value;
+            const nameEn = document.getElementById('nameEn').value;
+            const titleAr = document.getElementById('titleAr').value;
+            const titleEn = document.getElementById('titleEn').value;
+            const adminAr = document.getElementById('adminAr').value;
+            const adminEn = document.getElementById('adminEn').value;
+            const unitAr = document.getElementById('unitAr').value;
+            const unitEn = document.getElementById('unitEn').value;
+            const email = document.getElementById('email').value;
+            const phone1 = document.getElementById('phone1').value;
+            const phone2 = document.getElementById('phone2').value;
+
+            const vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:${nameEn}\nORG:LTT\nTITLE:${titleEn}\nTEL;TYPE=CELL:+21891${phone1}\nTEL;TYPE=WORK:+21895${phone2}\nEMAIL:${email}\nURL:www.ltt.ly\nEND:VCARD`;
+            const finalQrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(vCardData);
+
+            const htmlString = `<table cellpadding="0" cellspacing="0" border="0" dir="ltr" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.2; width: 600px; text-align: left;">
+    <tr>
+        <td>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                    <td width="130" valign="middle" align="left" style="padding-right: 15px;">
+                        <img src="${finalQrUrl}" alt="QR Code" width="115" style="display: block;">
+                    </td>
+                    
+                    <td width="2" bgcolor="#F4782B" style="padding: 0;"></td>
+                    
+                    <td valign="top" align="left" style="padding-left: 20px;">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%" dir="ltr">
+                            <tr><td style="font-size: 16px; color: #1557A9; font-weight: bold; padding-bottom: 4px; white-space: nowrap;">${nameAr}</td></tr>
+                            <tr><td style="font-size: 14px; color: #333; font-weight: bold; padding-bottom: 12px; white-space: nowrap;">${nameEn}</td></tr>
+                            
+                            <tr><td style="font-size: 14px; color: #333; font-weight: bold; padding-bottom: 4px; white-space: nowrap;">${titleAr}</td></tr>
+                            <tr><td style="font-size: 13px; color: #666; padding-bottom: 10px; white-space: nowrap;">${titleEn}</td></tr>
+                            
+                            <tr>
+                                <td style="padding-bottom: 4px; white-space: nowrap;">
+                                    <table cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td style="font-size: 13px; color: #333; font-weight: bold; text-align: left;">${unitAr}</td>
+                                            <td style="font-size: 13px; color: #333; font-weight: bold; text-align: left; padding-left: 12px;">${adminAr}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="padding-bottom: 15px; white-space: nowrap;">
+                                    <table cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td style="font-size: 12px; color: #666; text-align: left;">${unitEn}</td>
+                                            <td style="font-size: 12px; color: #666; text-align: left; padding-left: 12px;">${adminEn}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="font-size: 14px; color: #1557A9; font-weight: bold; padding-bottom: 6px;">
+                                    <img src="https://img.icons8.com/ios-filled/24/00a650/phone.png" width="14" style="vertical-align: middle; margin-right: 6px;">
+                                    <span style="vertical-align: middle;">+218 95 ${phone2}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 14px; color: #1557A9; font-weight: bold; padding-bottom: 6px;">
+                                    <img src="https://img.icons8.com/ios-filled/24/00a650/phone.png" width="14" style="vertical-align: middle; margin-right: 6px;">
+                                    <span style="vertical-align: middle;">+218 91 ${phone1}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 14px; color: #1557A9; font-weight: bold;">
+                                    <img src="https://img.icons8.com/ios-filled/24/00a650/email.png" width="14" style="vertical-align: middle; margin-right: 6px;">
+                                    <a href="mailto:${email}" style="color: #1557A9; text-decoration: none; vertical-align: middle;">${email}</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-top: 20px;">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td align="left" valign="middle" style="padding-right: 30px;">
+                        <img src="${logoUrl}" alt="LTT Logo" width="160" style="display: block; border: 0;">
+                    </td>
+                    <td align="left" valign="middle">
+                        <table cellpadding="0" cellspacing="0" border="0" dir="ltr" align="left">
+                            <tr>
+                                <td><a href="${LTT_LINKS.web}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/32/1006/1006771.png" width="26" style="border:0; vertical-align: middle;"></a></td>
+                                <td><a href="${LTT_LINKS.map}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/32/819/819865.png" width="26" style="margin-left: 18px; border:0; vertical-align: middle;"></a></td>
+                                <td><a href="${LTT_LINKS.yt}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/32/1384/1384060.png" width="26" style="margin-left: 18px; border:0; vertical-align: middle;"></a></td>
+                                <td><a href="${LTT_LINKS.li}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/32/3536/3536505.png" width="26" style="margin-left: 18px; border:0; vertical-align: middle;"></a></td>
+                                <td><a href="${LTT_LINKS.x}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/32/5969/5969020.png" width="26" style="margin-left: 18px; border:0; vertical-align: middle;"></a></td>
+                                <td><a href="${LTT_LINKS.fb}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/32/733/733547.png" width="26" style="margin-left: 18px; border:0; vertical-align: middle;"></a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-top: 20px;">
+            <div dir="rtl" style="font-size: 9px; color: #777; text-align: justify; line-height: 1.4; margin-bottom: 8px;">
+                محتوى هذا البريد الإلكتروني سري ومخصص للمستلم المحدد في الرسالة فقط. يمنع منعاً باتاً مشاركة أي جزء من هذه الرسالة مع أي طرف ثالث، دون موافقة خطية من المرسل. إذا تلقيت هذه الرسالة عن طريق الخطأ، فالرجاء الرد على هذه الرسالة والمتابعة بحذفها، حتى نتمكن من ضمان عدم حدوث مثل هذا الخطأ في المستقبل.
+            </div>
+            <div dir="ltr" style="font-size: 9px; color: #777; text-align: justify; line-height: 1.4;">
+                The content of this email is confidential and intended for the recipient specified in message only. It is strictly forbidden to share any part of this message with any third party, without a written consent of the sender. If you received this message by mistake, please reply to this message and follow with its deletion, so that we can ensure such a mistake does not occur in the future.
+            </div>
+        </td>
+    </tr>
+</table>`;
+
+            document.getElementById('preview-container').innerHTML = htmlString;
+        }
+
+        function copySignatureVisual() {
+            const preview = document.getElementById('preview-container');
+            const range = document.createRange();
+            range.selectNode(preview);
+            
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            
+            try {
+                document.execCommand('copy');
+                alert("تم نسخ التوقيع بنجاح!");
+            } catch (err) {
+                alert("حدث خطأ أثناء النسخ.");
+            }
+            
+            selection.removeAllRanges();
+        }
+
+        updateSignature();
+    </script>
+</body>
+</html>
